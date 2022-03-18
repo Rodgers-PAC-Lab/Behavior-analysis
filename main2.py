@@ -114,6 +114,7 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220316133933-F1_PAFT-Box2', 1),
     ('20220316140736-F3_PAFT-Box2', 22),
     ('20220316114550-M4_PAFT-Box2', 29),
+    ('20220317125801-M2_PAFT-Box2', 48),
 
     ], names=['session_name', 'trial'])
 
