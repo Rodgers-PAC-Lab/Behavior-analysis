@@ -205,6 +205,17 @@ def parse_lines_from_single_session(session_lines):
             sound = parsed[5].replace(';', '')
             light = parsed[7].replace(';', '')
             
+            # Optionally extract these if available
+            if 'mean_interval' in line:
+                mean_interval = float(parsed[9].replace(';', ''))
+            else:
+                mean_interval = np.nan
+            
+            if 'var_interval' in line:
+                var_interval = float(parsed[11].replace(';', ''))
+            else:
+                var_interval = np.nan
+            
             # Get the timestamp
             parsed = line.split()
             timestamp_date = line.split()[0]
@@ -212,7 +223,7 @@ def parse_lines_from_single_session(session_lines):
             timestamp = timestamp_date + ' ' + timestamp_time
             
             # Store
-            starts_l.append((timestamp, rpi, side, sound, light))
+            starts_l.append((timestamp, rpi, side, sound, light, mean_interval, var_interval))
 
         elif 'rewarded poke' in line or 'blocked poke' in line:
             # PokeTrain only
@@ -265,7 +276,7 @@ def parse_lines_from_single_session(session_lines):
         pokes_df = pandas.DataFrame.from_records(
             pokes_l, columns=['timestamp', 'port'])
         starts_df = pandas.DataFrame.from_records(
-            starts_l, columns=['timestamp', 'rpi', 'side', 'sound', 'light'])
+            starts_l, columns=['timestamp', 'rpi', 'side', 'sound', 'light', 'mean_interval', 'var_interval'])
         stops_df = pandas.DataFrame.from_records(
             stops_l, columns=['timestamp', 'port'])  
 
