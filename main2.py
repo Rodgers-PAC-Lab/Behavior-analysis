@@ -497,6 +497,16 @@ opto_scored_by_fraction_correct = opto_scored['perf'].unstack('opto').sort_index
 opto_scored_by_fraction_correct = opto_scored_by_fraction_correct.rename(
     columns={False: 'ctrl', True: 'opto'})
 
+# Score by acoustic
+joined = trial_data.join(logfile_trial_starts_df[['mean_interval', 'var_interval']])
+acoustic_scored = joined.groupby(
+    ['mouse', 'session_name', 'mean_interval', 'var_interval']
+    )['outcome'].value_counts().unstack('outcome').fillna(0)
+acoustic_scored['perf'] = acoustic_scored['correct'].divide(
+    acoustic_scored['correct'] + acoustic_scored['error'])
+acoustic_scored_by_fraction_correct = acoustic_scored['perf'].unstack(
+    ['mean_interval', 'var_interval']).sort_index(axis=1)
+
 
 ## Score trials by how many ports poked before correct
 # Get the latency to each port on each trial
@@ -632,6 +642,12 @@ opto_scored_by_n_ports = trial_data.groupby(
     ['opto']).sort_index(axis=1)
 opto_scored_by_n_ports = opto_scored_by_n_ports.rename(
     columns={False: 'ctrl', True: 'opto'})
+
+# Same for mean_interval and var_interval
+joined = trial_data.join(logfile_trial_starts_df[['mean_interval', 'var_interval']])
+acoustic_scored_by_n_ports = joined.groupby(
+    ['mouse', 'session_name', 'mean_interval', 'var_interval'])['rcp'].mean().unstack(
+    ['mean_interval', 'var_interval']).sort_index(axis=1)
 
 
 ## Trial duration
@@ -827,9 +843,82 @@ for cohort in list(cohorts.keys()):# + ['all']:
 
 plt.show()
 
+## Slice acoustic by day
+acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.stack().stack().rename(
+    'perf').reset_index().join(session_df['date'], on=[
+    'mouse', 'session_name']).set_index(
+    ['date', 'mouse', 'session_name', 'mean_interval', 'var_interval'])['perf'].unstack(
+    ['mean_interval', 'var_interval'])
+
+acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.stack().stack().rename(
+    'perf').reset_index().join(session_df['date'], on=[
+    'mouse', 'session_name']).set_index(
+    ['date', 'mouse', 'session_name', 'mean_interval', 'var_interval'])['perf'].unstack(
+    ['mean_interval', 'var_interval'])
 
 
-# This is for examining data from today
+# Include only this day
+acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.loc[
+    datetime.date(2022, 3, 17)].dropna(1)
+acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.loc[
+    datetime.date(2022, 3, 17)].dropna(1)
+
+#~ # Drop only this day
+#~ acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.drop(
+    #~ datetime.date(2022, 3, 17)).dropna(1)
+#~ acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.drop(
+    #~ datetime.date(2022, 3, 17)).dropna(1)
+
+
+## Plot acoustic
+metric_l = ['rcp', 'fc']
+plot_by_l = ['mean_interval', 'var_interval']
+
+f, axa = plt.subplots(2, 2)
+f.subplots_adjust(hspace=.4, wspace=.4)
+for metric in metric_l:
+    for plot_by in plot_by_l:
+        ax = axa[
+            metric_l.index(metric),
+            plot_by_l.index(plot_by),
+            ]
+        
+        # Get data
+        if metric == 'rcp':
+            data = acoustic_scored_by_n_ports
+        elif metric == 'fc':
+            data = acoustic_scored_by_fraction_correct
+
+        # Mean over mice and session
+        data = data.mean()
+        
+        # Unstack plot_by
+        data = data.unstack(plot_by)
+        
+        ax.plot(data)
+        
+        if plot_by == 'mean_interval':
+            ax.set_xlabel('irregularity')
+            ax.legend(['high rate', 'med rate', 'low rate'], loc='lower right', fontsize='x-small')
+            
+        elif plot_by == 'var_interval':
+            ax.set_xlabel('inter-sound interval (s)')
+            ax.legend(['regular', 'med', 'irregular'], loc='lower right', fontsize='x-small')
+        
+        if metric == 'rcp':
+            ax.set_ylabel('rank of correct port')
+            ax.set_ylim((2, 0))
+            ax.set_yticks((0, 1, 2))
+        elif metric == 'fc':
+            ax.set_ylabel('fraction correct')
+            ax.set_ylim((0, 1))
+            ax.set_yticks((0, .5, 1))
+
+## Show
+plt.show()
+
+
+## This is for examining data from today
 todays_perf = perf_metrics.xs(datetime.date.today(), level='date').copy()
 todays_perf['cohort'] = ''
 for cohort, cohort_mice in cohorts.items():
