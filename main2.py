@@ -61,6 +61,8 @@ munged_sessions = [
     '20220302162841-M4_PAFT-Box2',
     '20220307153240-F2_PAFT-Box2',
     '20220228172631-F1_PAFT-Box2',
+    '20220321103222-M1_PAFT-Box2',
+    '20220321104048-M3_PAFT-Box2',
 ]
 
 # These are ones where there are no pokes, or no correct pokes
@@ -115,7 +117,11 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220316140736-F3_PAFT-Box2', 22),
     ('20220316114550-M4_PAFT-Box2', 29),
     ('20220317125801-M2_PAFT-Box2', 48),
-
+    ('20220317161245-F1_PAFT-Box2', 16), 
+    ('20220318123209-F1_PAFT-Box2', 45), 
+    ('20220318153029-F2_PAFT-Box2', 61),
+    ('20220321101305-M1_PAFT-Box2', 43), 
+    ('20220321113703-F1_PAFT-Box2', 13),
     ], names=['session_name', 'trial'])
 
 # List of logfilenames
@@ -154,15 +160,15 @@ munged_trials = pandas.MultiIndex.from_tuples([
     #~ '/home/chris/mnt/rpi05/autopilot/logs/tasks.log',
     #~ ]
 logfilenames = [
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.6',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.5',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.4',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.3',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
-    '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.6',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.5',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.4',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.3',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
+    '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log',
     ]
 
 
@@ -181,7 +187,7 @@ logfilenames = [
 # This also drops munged sessions
 session_df, trial_data = extras.load_data_from_all_mouse_hdf5(
     mouse_names, munged_sessions,
-    path_to_terminal_data='/home/mouse/mnt/cuttlefish/from_octopus/autopilot/terminal/autopilot/data',
+    path_to_terminal_data='/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/terminal/autopilot/data',
     )
     
 
@@ -276,7 +282,7 @@ assert sliced_ltsdf[check_cols].equals(trial_data[check_cols])
 # This can be slightly off, I guess due to logging latency
 timestamp_diff = trial_data['timestamp'] - sliced_ltsdf['timestamp']
 assert timestamp_diff.min() > datetime.timedelta(seconds=0)
-assert timestamp_diff.max() < datetime.timedelta(seconds=.1)
+assert timestamp_diff.max() < datetime.timedelta(seconds=.2)
 
 # From now on, logfile_trial_starts_df is useless, except possibly for
 # extracting the time of the last trial start, which is not in HDF5
