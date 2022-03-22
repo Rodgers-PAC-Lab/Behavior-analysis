@@ -122,6 +122,11 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220318153029-F2_PAFT-Box2', 61),
     ('20220321101305-M1_PAFT-Box2', 43), 
     ('20220321113703-F1_PAFT-Box2', 13),
+    ('20220322162928-M2_PAFT-Box2', 29), 
+    ('20220322155709-M4_PAFT-Box2', 49),
+    ('20220321142307-F4_PAFT-Box2', 61), 
+    ('20220321171949-M4_PAFT-Box2', 35), 
+    ('20220322140258-M3_PAFT-Box2', 14),
     ], names=['session_name', 'trial'])
 
 # List of logfilenames
@@ -858,11 +863,12 @@ acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.stack(
 
 
 # Include only this day
+"""
 acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.loc[
     datetime.date(2022, 3, 17)].dropna(1)
 acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.loc[
     datetime.date(2022, 3, 17)].dropna(1)
-
+"""
 #~ # Drop only this day
 #~ acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.drop(
     #~ datetime.date(2022, 3, 17)).dropna(1)
@@ -895,7 +901,7 @@ for metric in metric_l:
         # Unstack plot_by
         data = data.unstack(plot_by)
         
-        ax.plot(data)
+        ax.plot(data, marker='o', linestyle='-')
         
         if plot_by == 'mean_interval':
             ax.set_xlabel('irregularity')
