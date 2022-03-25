@@ -370,7 +370,7 @@ def parse_logfile_lines(all_logfile_lines):
     return session_starts, big_trial_starts_df, big_pokes_df
 
 def load_data_from_all_mouse_hdf5(mouse_names, munged_sessions,
-    path_to_terminal_data='/home/chris/autopilot/data'):
+    path_to_terminal_data):
     """Load trial data and weights from HDF5 files for all mice
     
     See load_data_from_single_hdf5 for how the data is loaded from each mouse.
