@@ -7,16 +7,13 @@ rsync -va --backup-dir=/home/chris/mnt/farscape_home/behavior/autopilot/logfiles
 rsync -va --backup-dir=/home/chris/mnt/farscape_home/behavior/autopilot/terminal_backup_`date +%F_%H-%M-%S` /home/chris/autopilot /home/chris/mnt/farscape_home/behavior/autopilot/terminal
 rsync -va /home/chris/Videos /mnt/farscape_x1/paft_videos/spinview
 """
-import os
-import glob
-import tables
-import pandas
 import datetime
-import numpy as np
-import matplotlib.pyplot as plt
-import my.plot
-import extras
 import importlib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas
+import extras
+import my.plot
 importlib.reload(extras)
 
 
@@ -42,18 +39,7 @@ assert sorted(mouse_names) == sorted(np.concatenate(list(cohorts.values())))
 
 # List of munged sessions
 # These will be dropped
-"""
-          mouse                      session_name                 first_trial
-0    Male1_0720    20210825132244-Male1_0720-Box1  2021-08-25T13:22:44.336316
-1    Male4_0720    20210819132613-Male4_0720-Box1  2021-08-19T13:26:13.971312
-2    Male4_0720    20210909151843-Male4_0720-Box2  2021-09-09T15:18:43.568229
-3    Male4_0720    20210909153824-Male4_0720-Box2  2021-09-09T15:38:24.245852
-4    Male5_0720    20210819132413-Male5_0720-Box1  2021-08-19T13:24:13.074389
-5    Male5_0720    20210825145809-Male5_0720-Box1  2021-08-25T14:58:09.985058
-6  Female1_0903  20210908142456-Female1_0903-Box1  2021-09-08T14:24:56.805003
-7  Female4_0903  20210909151831-Female4_0903-Box1  2021-09-09T15:18:31.719998
-"""
-# List of munged sessions
+
 munged_sessions = [
     '20220302155704-M2_PAFT-Box2',
     '20220302160131-M2_PAFT-Box2',
@@ -67,38 +53,6 @@ munged_sessions = [
 
 # These are ones where there are no pokes, or no correct pokes
 munged_trials = pandas.MultiIndex.from_tuples([
-    ('20211102141206-3279-6-Box2', 29),
-    ('20211103122157-3276-7-Box1', 28), 
-    ('20211103122201-3279-9-Box2', 69),
-    ('20211103131437-3279-8-Box2', 68),
-    ('20211103153426-3277-2-Box2', 148),
-    ('20211104175229-3279-7-Box1', 46), 
-    ('20211104175229-3279-7-Box1', 101),
-    ('20211105143822-3279-8-Box2', 100), 
-    ('20211105143822-3279-8-Box2', 158),
-    ('20211105173135-3279-6-Box2', 21),
-    ('20211106150718-3279-2-Box2', 24),
-    ('20211106175628-Female4_0903-Box1', 1),
-    ('20211107141414-3279-2-Box2', 51), 
-    ('20211107134646-3279-8-Box2', 39),
-    ('20211108132204-3279-1-Box2', 18), 
-    ('20211108114828-3279-2-Box2', 28), 
-    ('20211108114828-3279-2-Box2', 141),
-    ('20211109142619-3277-3-Box1', 120),
-    ('20211112172503-3279-8-Box2', 66),
-    ('20211113140500-3277-3-Box1', 9), 
-    ('20211113150455-3279-4-Box2', 91),
-    ('20211113130408-3279-1-Box2', 10), 
-    ('20211113165727-3277-4-Box1', 80),
-    ('20211114165343-3279-4-Box2', 166), 
-    ('20211114172455-3279-9-Box2', 20),
-    ('20211114142741-3279-5-Box1', 105), 
-    ('20211114154642-3277-3-Box1', 71),
-    ('20211121131520-3277-3-Box1', 100),
-    ('20211123142312-3279-7-Box1', 147),
-    ('20211130181907-3279-1-Box2', 29),
-    ('20211202153802-3277-1-Box2', 41),
-    ('20211203161029-3277-3-Box1', 99),
     ('20220302131754-F1_PAFT-Box2', 24), 
     ('20220303112827-F4_PAFT-Box2', 3),
     ('20220301141022-M3_PAFT-Box2', 6), 
@@ -127,6 +81,7 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220321142307-F4_PAFT-Box2', 61), 
     ('20220321171949-M4_PAFT-Box2', 35), 
     ('20220322140258-M3_PAFT-Box2', 14),
+    ('20220323114916-F2_PAFT-Box2', 52),
     ], names=['session_name', 'trial'])
 
 # List of logfilenames
@@ -863,12 +818,12 @@ acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.stack(
 
 
 # Include only this day
-"""
+
 acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.loc[
-    datetime.date(2022, 3, 17)].dropna(1)
+    datetime.date(2022, 3, 23)].dropna(1)
 acoustic_scored_by_fraction_correct = acoustic_scored_by_fraction_correct.loc[
-    datetime.date(2022, 3, 17)].dropna(1)
-"""
+    datetime.date(2022, 3, 23)].dropna(1)
+
 #~ # Drop only this day
 #~ acoustic_scored_by_n_ports = acoustic_scored_by_n_ports.drop(
     #~ datetime.date(2022, 3, 17)).dropna(1)
@@ -905,16 +860,16 @@ for metric in metric_l:
         
         if plot_by == 'mean_interval':
             ax.set_xlabel('irregularity')
-            ax.legend(['high rate', 'med rate', 'low rate'], loc='lower right', fontsize='x-small')
+            ax.legend(['high rate', 'med rate', 'low rate'], loc='upper right', fontsize='x-small')
             
         elif plot_by == 'var_interval':
             ax.set_xlabel('inter-sound interval (s)')
-            ax.legend(['regular', 'med', 'irregular'], loc='lower right', fontsize='x-small')
+            ax.legend(['regular', 'med', 'irregular'], loc='upper right', fontsize='x-small')
         
         if metric == 'rcp':
             ax.set_ylabel('rank of correct port')
-            ax.set_ylim((2, 0))
-            ax.set_yticks((0, 1, 2))
+            ax.set_ylim((3, 0))
+            ax.set_yticks((0, 1, 2,3))
         elif metric == 'fc':
             ax.set_ylabel('fraction correct')
             ax.set_ylim((0, 1))
