@@ -1,13 +1,12 @@
 import socket
 import numpy as np
 import pandas
-
+import extras
 
 # Check to see which computer it's running on and get the right file paths
 computer = socket.gethostname()
-print("Running on",computer)
+print("Running on", computer)
 if computer == 'squid':
-    print ("you got the if")
     logfilenames = [
         '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
         '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
@@ -18,22 +17,22 @@ if computer == 'squid':
         '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
         '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
         '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log',
-        ]
+    ]
     path_to_terminal_data = '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/terminal/autopilot/data'
-elif 'clownfish':
+elif computer == 'clownfish':
     logfilenames = [
-        ]
+    ]
     path_to_terminal_data = 'x'
-elif 'octopus':
+elif computer == 'octopus':
     path_to_terminal_data = 'y'
-elif 'x': #Chris, put your office computer here
+elif computer == 'x':  # Chris, put your office computer here
     path_to_terminal_data = 'z'
-else :
+else:
     print("Computer not recognized. Please enter the filepath to the log files:")
-    #Figure ot how to actually accept input and assign it to the variable later
+    # Figure ot how to actually accept input and assign it to the variable later
     print("Please enter the filepath to the terminal data:")
 
-## Specify data to load
+# Specify data to load
 # List of mouse names
 # Session and trial data are loaded from the HDF5 files for each mouse
 mouse_names = [
@@ -41,7 +40,7 @@ mouse_names = [
     'M2_PAFT', 'M4_PAFT',
     'F1_PAFT', 'F3_PAFT',
     'F2_PAFT', 'F4_PAFT',
-    ]
+]
 
 cohorts = {
     'all': [
@@ -49,10 +48,10 @@ cohorts = {
         'M2_PAFT', 'M4_PAFT',
         'F1_PAFT', 'F3_PAFT',
         'F2_PAFT', 'F4_PAFT',
-        ],
+    ],
 }
 
-#Checks mouse_names against cohorts and makes sure they have the same subjects. Appears to not allow duplicates either?
+# Checks mouse_names against cohorts and makes sure they have the same subjects. Appears to not allow duplicates either?
 assert sorted(mouse_names) == sorted(np.concatenate(list(cohorts.values())))
 # List of munged sessions
 # These will be dropped
@@ -99,15 +98,36 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220321171949-M4_PAFT-Box2', 35),
     ('20220322140258-M3_PAFT-Box2', 14),
     ('20220323114916-F2_PAFT-Box2', 52),
-    ], names=['session_name', 'trial'])
-print(munged_trials)
+], names=['session_name', 'trial'])
 
-## Load trial data and weights from the HDF5 files
+# Load trial data and weights from the HDF5 files
 # This also drops munged sessions
 session_df, trial_data = extras.load_data_from_all_mouse_hdf5(
-    mouse_names, munged_sessions,
-    path_to_terminal_data
+    mouse_names, munged_sessions, path_to_terminal_data,
+)
+# Load all logfiles into a huge list of lines
+# Read each
+all_logfile_lines = []
+for logfilename in logfilenames:
+    with open(logfilename) as fi:
+        this_lines = fi.readlines()
+    all_logfile_lines += this_lines
+
+# with open("alllogfiles.txt", 'w') as output:
+#     for row in all_logfile_lines:
+#         output.write(str(row) + '\n')
+
+# Calculate trial duration in seconds and add it as a column on trial_data
+trial_data['duration'] = trial_data.groupby(
+    ['mouse', 'session_name'])['timestamp'].diff() .shift(-1).apply(
+    lambda dt: dt.total_seconds())
+breakpoint()
+# Parse the logfile lines
+# These are all indexed by arbitrary 'n_session' instead of meaningful names
+logfile_session_start_lines, logfile_trial_starts_df, logfile_pokes_df = (
+    extras.parse_logfile_lines(all_logfile_lines)
     )
 
-
+# This should be datetime64 not pandas.Timestamp
+logfile_pokes_df['timestamp'] = logfile_pokes_df['timestamp'].apply(lambda x: x.to_datetime64())
 print("The END")
