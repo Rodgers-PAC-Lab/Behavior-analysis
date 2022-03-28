@@ -82,6 +82,8 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220321171949-M4_PAFT-Box2', 35), 
     ('20220322140258-M3_PAFT-Box2', 14),
     ('20220323114916-F2_PAFT-Box2', 52),
+    ('20220324151921-M1_PAFT-Box2', 5),
+    ('20220325101431-M1_PAFT-Box2', 43)
     ], names=['session_name', 'trial'])
 
 # List of logfilenames

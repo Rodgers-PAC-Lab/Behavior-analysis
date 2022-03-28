@@ -28,9 +28,9 @@ elif computer == 'octopus':
 elif computer == 'x':  # Chris, put your office computer here
     path_to_terminal_data = 'z'
 else:
-    print("Computer not recognized. Please enter the filepath to the log files:")
-    # Figure ot how to actually accept input and assign it to the variable later
-    print("Please enter the filepath to the terminal data:")
+    logfilenames = input("Computer not recognized. Please enter the filepath to the log files:")
+    # TO DO: Figure out how to let user browse and select files instead of just inputting a filepath
+    path_to_terminal_data= input("Please enter the filepath to the terminal data:")
 
 # Specify data to load
 # List of mouse names
