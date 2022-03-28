@@ -890,15 +890,15 @@ for cohort, cohort_mice in cohorts.items():
             todays_perf.loc[mouse, 'cohort'] = cohort
 
 # This is for counting trials from today across all ports
-n_trials_today_by_port = trial_data.reindex(
-    todays_perf['session_name'].values, level='session_name').groupby(
-    'rpi_side').size()
-
-# This is for counting trials over the last three days
-recent_n_trials_by_mouse = perf_metrics['n_trials'].unstack(
-    'mouse').loc[very_recent_dates].dropna(axis=1, how='all').mean().sort_values()
-
-# This is for looking at todays_perf
-todays_perf = perf_metrics.xs(datetime.date.today(), level=1).drop(
-    'session_name', axis=1).sort_index(axis=1)
+# n_trials_today_by_port = trial_data.reindex(
+#     todays_perf['session_name'].values, level='session_name').groupby(
+#     'rpi_side').size()
+#
+# # This is for counting trials over the last three days
+# recent_n_trials_by_mouse = perf_metrics['n_trials'].unstack(
+#     'mouse').loc[very_recent_dates].dropna(axis=1, how='all').mean().sort_values()
+#
+# # This is for looking at todays_perf
+# todays_perf = perf_metrics.xs(datetime.date.today(), level=1).drop(
+#     'session_name', axis=1).sort_index(axis=1)
 
