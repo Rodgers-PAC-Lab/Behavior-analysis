@@ -38,7 +38,18 @@ elif computer == 'clownfish':
     ]
     path_to_terminal_data = 'x'
 elif computer == 'octopus':
-    path_to_terminal_data = 'y'
+    logfilenames = [
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.6',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.5',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.4',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.3',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log',
+    ]
+    path_to_terminal_data = '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/terminal/autopilot/data'
 elif computer == 'x':  # Chris, put your office computer here
     path_to_terminal_data = 'z'
 else:
@@ -114,6 +125,11 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220323114916-F2_PAFT-Box2', 52),
     ('20220324151921-M1_PAFT-Box2', 5),
     ('20220325101431-M1_PAFT-Box2', 43),
+    ('20220328132942-F2_PAFT-Box2', 60),
+    ('20220328152937-F3_PAFT-Box2', 62),
+    ('20220328132942-F2_PAFT-Box2', 58),
+    ('20220328152937-F3_PAFT-Box2', 28),
+    ('20220328181211-M4_PAFT-Box2', 69),
     ], names=['session_name', 'trial'])
 
 # List of logfilenames
@@ -169,8 +185,7 @@ munged_trials = pandas.MultiIndex.from_tuples([
 # This also drops munged sessions
 session_df, trial_data = extras.load_data_from_all_mouse_hdf5(
     mouse_names, munged_sessions,
-    path_to_terminal_data='/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/terminal/autopilot/data',
-    )
+    path_to_terminal_data)
     
 
 ## Load all logfiles into a huge list of lines
@@ -645,10 +660,10 @@ trial_duration_by_opto = trial_duration_by_opto.rename(
 perf_metrics = pandas.concat([
     scored_by_n_ports.loc[:, (True, False)].rename('rcp'),
     scored_by_fraction_correct.loc[:, (True, False)].rename('fc'),
-    opto_scored_by_n_ports.loc[:, 'opto'].rename('opto_rcp'),
-    opto_scored_by_n_ports.loc[:, 'ctrl'].rename('ctrl_rcp'),
-    opto_scored_by_fraction_correct.loc[:, 'opto'].rename('opto_fc'),
-    opto_scored_by_fraction_correct.loc[:, 'ctrl'].rename('ctrl_fc'),
+    #opto_scored_by_n_ports.loc[:, 'opto'].rename('opto_rcp'),
+    #opto_scored_by_n_ports.loc[:, 'ctrl'].rename('ctrl_rcp'),
+    #opto_scored_by_fraction_correct.loc[:, 'opto'].rename('opto_fc'),
+    #opto_scored_by_fraction_correct.loc[:, 'ctrl'].rename('ctrl_fc'),
     scored_by_n_trials.rename('n_trials'),
     ], axis=1, verify_integrity=True)
 
@@ -670,6 +685,7 @@ acoustic_scored_by_n_ports.to_pickle('acoustic_scored_by_n_ports')
 acoustic_scored_by_fraction_correct.to_pickle('acoustic_scored_by_fraction_correct')
 session_df.to_pickle('session_df')
 
+print("the end")
 # ## Plots
 # # Choose dates to plot
 # all_dates = sorted(perf_metrics.index.levels[1])

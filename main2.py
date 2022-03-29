@@ -9,12 +9,53 @@ rsync -va /home/chris/Videos /mnt/farscape_x1/paft_videos/spinview
 """
 import datetime
 import importlib
+import socket
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
 import extras
 import my.plot
 importlib.reload(extras)
+
+# Check to see which computer it's running on and get the right file paths
+computer = socket.gethostname()
+print("Running on", computer)
+if computer == 'squid':
+    logfilenames = [
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.6',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.5',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.4',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.3',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
+        '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log',
+    ]
+    path_to_terminal_data = '/home/rowan/mnt/cuttlefish/behavior/from_octopus/autopilot/terminal/autopilot/data'
+elif computer == 'clownfish':
+    logfilenames = [
+    ]
+    path_to_terminal_data = 'x'
+elif computer == 'octopus':
+    logfilenames = [
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.6',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.5',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.4',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.3',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
+        '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log',
+    ]
+    path_to_terminal_data = '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/terminal/autopilot/data'
+elif computer == 'x':  # Chris, put your office computer here
+    path_to_terminal_data = 'z'
+else:
+    logfilenames = input("Computer not recognized. Please enter the filepath to the log files:")
+    # TO DO: Figure out how to let user browse and select files instead of just inputting a filepath
+    path_to_terminal_data= input("Please enter the filepath to the terminal data:")
 
 
 ## Specify data to load
@@ -83,7 +124,12 @@ munged_trials = pandas.MultiIndex.from_tuples([
     ('20220322140258-M3_PAFT-Box2', 14),
     ('20220323114916-F2_PAFT-Box2', 52),
     ('20220324151921-M1_PAFT-Box2', 5),
-    ('20220325101431-M1_PAFT-Box2', 43)
+    ('20220325101431-M1_PAFT-Box2', 43),
+    ('20220328132942-F2_PAFT-Box2', 60),
+    ('20220328152937-F3_PAFT-Box2', 62),
+    ('20220328132942-F2_PAFT-Box2', 58),
+    ('20220328152937-F3_PAFT-Box2', 28),
+    ('20220328181211-M4_PAFT-Box2', 69),
     ], names=['session_name', 'trial'])
 
 # List of logfilenames
