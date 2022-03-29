@@ -50,8 +50,19 @@ elif computer == 'octopus':
         '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/logfiles/rpi05/tasks.log',
     ]
     path_to_terminal_data = '/home/mouse/mnt/cuttlefish/from_octopus/autopilot/terminal/autopilot/data'
-elif computer == 'x':  # Chris, put your office computer here
-    path_to_terminal_data = 'z'
+elif computer == 'cephalopod':
+    logfilenames = [
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.8',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.7',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.6',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.5',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.4',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.3',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.2',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log.1',
+        '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/logfiles/rpi05/tasks.log',
+    ]
+    path_to_terminal_data = '/home/chris/mnt/cuttlefish/behavior/from_octopus/autopilot/terminal/autopilot/data'
 else:
     logfilenames = input("Computer not recognized. Please enter the filepath to the log files:")
     # TO DO: Figure out how to let user browse and select files instead of just inputting a filepath
