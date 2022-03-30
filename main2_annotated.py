@@ -695,6 +695,7 @@ perf_metrics.to_pickle('perf_metrics')
 acoustic_scored_by_n_ports.to_pickle('acoustic_scored_by_n_ports')
 acoustic_scored_by_fraction_correct.to_pickle('acoustic_scored_by_fraction_correct')
 session_df.to_pickle('session_df')
+trial_data.to_pickle('trial_data')
 
 print("the end")
 # ## Plots
