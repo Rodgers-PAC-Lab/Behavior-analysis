@@ -689,101 +689,102 @@ perf_metrics = perf_metrics.join(session_df[['date', 'weight']])
 perf_metrics = perf_metrics.reset_index().set_index(
     ['mouse', 'date']).sort_index()
 
+acoustic_trials=joined.dropna(subset=['mean_interval', 'var_interval'])
 
 ## Dump
 perf_metrics.to_pickle('perf_metrics')
 acoustic_scored_by_n_ports.to_pickle('acoustic_scored_by_n_ports')
 acoustic_scored_by_fraction_correct.to_pickle('acoustic_scored_by_fraction_correct')
 session_df.to_pickle('session_df')
-trial_data.to_pickle('trial_data')
+acoustic_trials.to_pickle('acoustic_trials')
 
 print("the end")
-# ## Plots
-# # Choose dates to plot
-# all_dates = sorted(perf_metrics.index.levels[1])
-#
-# # Choose recent dates (for perf plot), and the mice that are in them
-# recent_dates = all_dates[-18:]
-# recent_sessions = session_df.loc[
-#     session_df['date'].isin(recent_dates)]['date'].reset_index()
-# recent_mouse_names = sorted(recent_sessions['mouse'].unique())
-#
-# # Choose very recent dates (for error plot), and the mice that are in them
-# very_recent_dates = recent_dates[-5:]
-# very_recent_sessions = session_df.loc[
-#     session_df['date'].isin(very_recent_dates)]['date'].reset_index()
-# very_recent_mouse_names = sorted(very_recent_sessions['mouse'].unique())
-#
-# # Generate color bar
-# np.random.seed(0)  # if you don't like it, change it
-# universal_colorbar = np.random.permutation(my.plot.generate_colorbar(len(recent_mouse_names)))
-# universal_colorbar = pandas.DataFrame(
-#     universal_colorbar, index=recent_mouse_names)
-#
-# ## Iterate over cohorts
-# for cohort in list(cohorts.keys()):  # + ['all']:
-#
-#     ## The overall plot for this cohort
-#     # Get mice in this cohort
-#     if cohort == 'all':
-#         # If all, use the recent ones (not the very recent ones)
-#         cohort_mice = recent_mouse_names
-#     else:
-#         cohort_mice = cohorts[cohort]
-#
-#     # Plots
-#     plot_names = ['fc', 'rcp', 'n_trials', 'weight']
-#     f, axa = plt.subplots(len(plot_names), 1, figsize=(5, 8), sharex=False)
-#     f.subplots_adjust(hspace=.9, bottom=.1, top=.95)
-#     for ax, plot_name in zip(axa, plot_names):
-#         # Get data (corresponding column)
-#         data = perf_metrics[plot_name]
-#
-#         # Put mouse on columns
-#         data = data.unstack('mouse')
-#
-#         # Slice out just the cohort mice
-#         # ~ data = data.loc[:, cohort_mice]
-#         data = data.reindex(cohort_mice, axis=1)
-#
-#         # Slice out just the recent data
-#         data = data.loc[recent_dates]
-#
-#         # Remove dates from index
-#         data = data.reset_index(drop=True)
-#
-#         # Plot
-#         for colname in data.columns:
-#             try:
-#                 color = universal_colorbar.loc[colname].values
-#             except KeyError:
-#                 color = 'k'
-#             ax.plot(data[colname], '.-', color=color, label=colname)
-#
-#         # Pretty
-#         ax.set_title(plot_name)
-#         my.plot.despine(ax)
-#
-#         # Lims and chance bar
-#         if plot_name == 'fc':
-#             ax.set_ylim((0, 1))
-#             ax.plot(ax.get_xlim(), [1 / 7., 1 / 7.], 'k--', lw=.75)
-#         elif plot_name == 'rcp':
-#             ax.set_ylim((4, 0))
-#             ax.plot(ax.get_xlim(), [3., 3.], 'k--', lw=.75)
-#         elif plot_name == 'n_trials':
-#             ax.set_ylim(ymin=0)
-#
-#         # Legend
-#         if plot_name == 'weight':
-#             ax.legend(fontsize=10, loc='lower left')
-#
-#         xt = np.array(list(range(len(recent_dates))))
-#         xtl = [dt.strftime('%m-%d') for dt in recent_dates]
-#         ax.set_xticks(xt)
-#         ax.set_xticklabels(xtl, rotation=45)
-#         ax.set_xlim((xt[0] - .5, xt[-1] + .5))
-#     continue
+## Plots
+# Choose dates to plot
+all_dates = sorted(perf_metrics.index.levels[1])
+
+# Choose recent dates (for perf plot), and the mice that are in them
+recent_dates = all_dates[-18:]
+recent_sessions = session_df.loc[
+    session_df['date'].isin(recent_dates)]['date'].reset_index()
+recent_mouse_names = sorted(recent_sessions['mouse'].unique())
+
+# Choose very recent dates (for error plot), and the mice that are in them
+very_recent_dates = recent_dates[-5:]
+very_recent_sessions = session_df.loc[
+    session_df['date'].isin(very_recent_dates)]['date'].reset_index()
+very_recent_mouse_names = sorted(very_recent_sessions['mouse'].unique())
+
+# Generate color bar
+np.random.seed(0)  # if you don't like it, change it
+universal_colorbar = np.random.permutation(my.plot.generate_colorbar(len(recent_mouse_names)))
+universal_colorbar = pandas.DataFrame(
+    universal_colorbar, index=recent_mouse_names)
+
+## Iterate over cohorts
+for cohort in list(cohorts.keys()):  # + ['all']:
+
+    ## The overall plot for this cohort
+    # Get mice in this cohort
+    if cohort == 'all':
+        # If all, use the recent ones (not the very recent ones)
+        cohort_mice = recent_mouse_names
+    else:
+        cohort_mice = cohorts[cohort]
+
+    # Plots
+    plot_names = ['fc', 'rcp', 'n_trials', 'weight']
+    f, axa = plt.subplots(len(plot_names), 1, figsize=(5, 8), sharex=False)
+    f.subplots_adjust(hspace=.9, bottom=.1, top=.95)
+    for ax, plot_name in zip(axa, plot_names):
+        # Get data (corresponding column)
+        data = perf_metrics[plot_name]
+
+        # Put mouse on columns
+        data = data.unstack('mouse')
+
+        # Slice out just the cohort mice
+        # ~ data = data.loc[:, cohort_mice]
+        data = data.reindex(cohort_mice, axis=1)
+
+        # Slice out just the recent data
+        data = data.loc[recent_dates]
+
+        # Remove dates from index
+        data = data.reset_index(drop=True)
+
+        # Plot
+        for colname in data.columns:
+            try:
+                color = universal_colorbar.loc[colname].values
+            except KeyError:
+                color = 'k'
+            ax.plot(data[colname], '.-', color=color, label=colname)
+
+        # Pretty
+        ax.set_title(plot_name)
+        my.plot.despine(ax)
+
+        # Lims and chance bar
+        if plot_name == 'fc':
+            ax.set_ylim((0, 1))
+            ax.plot(ax.get_xlim(), [1 / 7., 1 / 7.], 'k--', lw=.75)
+        elif plot_name == 'rcp':
+            ax.set_ylim((4, 0))
+            ax.plot(ax.get_xlim(), [3., 3.], 'k--', lw=.75)
+        elif plot_name == 'n_trials':
+            ax.set_ylim(ymin=0)
+
+        # Legend
+        if plot_name == 'weight':
+            ax.legend(fontsize=10, loc='lower left')
+
+        xt = np.array(list(range(len(recent_dates))))
+        xtl = [dt.strftime('%m-%d') for dt in recent_dates]
+        ax.set_xticks(xt)
+        ax.set_xticklabels(xtl, rotation=45)
+        ax.set_xlim((xt[0] - .5, xt[-1] + .5))
+    continue
 #
 #     ## Plot error distr over time
 #     # Plot each
