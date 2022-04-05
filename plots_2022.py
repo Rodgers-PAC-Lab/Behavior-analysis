@@ -39,10 +39,6 @@ universal_colorbar = pandas.DataFrame(
 plot_names = ['fc', 'rcp', 'n_trials']
 fc_data = perf_metrics['fc']
 fc_data=fc_data.unstack('mouse')
-#print(fc_data['M1_PAFT'])
-#f,axa = plt.subplots(1,1,figsize=(5,5))
-for mouse in fc_data:
-    print(mouse)
 
 # Choose dates to plot
 all_dates = sorted(perf_metrics.index.levels[1])
@@ -58,14 +54,11 @@ f.subplots_adjust(hspace=.9, bottom=.1, top=.95)
 for ax, plot_name in zip(axa, plot_names):
     # Get data (corresponding column)
     data = perf_metrics[plot_name]
-    print(data)
+    #print(data)
 
     # Put mouse in columns, date and data in rows
     data = data.unstack('mouse')
-    print('unstacked')
-
     data = data.reset_index(drop=True)
-    print('dateless')
     # Plot
     for colname in data.columns:
         try:
@@ -94,3 +87,7 @@ for ax, plot_name in zip(axa, plot_names):
         ax.set_xlim((xt[0] - .5, xt[-1] + .5))
     continue
 
+def assign_condition_to_row(row):
+    return '{}_{}'.format(float(row['mean_interval']), float(row['var_interval']))
+
+acoustic_trials['condition'] = acoustic_trials.apply(assign_condition_to_row, axis=1)
