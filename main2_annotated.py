@@ -690,7 +690,10 @@ perf_metrics = perf_metrics.reset_index().set_index(
     ['mouse', 'date']).sort_index()
 
 acoustic_trials=joined.dropna(subset=['mean_interval', 'var_interval'])
+def assign_condition_to_row(row):
+    return '{}_{}'.format(float(row['mean_interval']), float(row['var_interval']))
 
+acoustic_trials['condition'] = acoustic_trials.apply(assign_condition_to_row, axis=1)
 ## Dump
 perf_metrics.to_pickle('perf_metrics')
 acoustic_scored_by_n_ports.to_pickle('acoustic_scored_by_n_ports')

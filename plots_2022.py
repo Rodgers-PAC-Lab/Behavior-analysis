@@ -86,8 +86,3 @@ for ax, plot_name in zip(axa, plot_names):
         ax.set_xticklabels(xtl, rotation=45)
         ax.set_xlim((xt[0] - .5, xt[-1] + .5))
     continue
-
-def assign_condition_to_row(row):
-    return '{}_{}'.format(float(row['mean_interval']), float(row['var_interval']))
-
-acoustic_trials['condition'] = acoustic_trials.apply(assign_condition_to_row, axis=1)
