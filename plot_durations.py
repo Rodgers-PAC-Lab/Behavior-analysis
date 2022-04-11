@@ -30,15 +30,8 @@ cohort = {
         'F2_PAFT', 'F4_PAFT',
         ],
 }
-midx = pandas.MultiIndex.from_product(
-    [[.25, .45, .65], [.0001, .01, .1]],
-    names=['mean_interval', 'var_interval'])
-
 simple_acoustic = acoustic_trials.drop(['light','sound','opto','trial_start','prev_rpi_side','n_pokes'],axis=1)
 simple_acoustic = simple_acoustic.reset_index()
-#simple_acoustic[["var_interval"]] = simple_acoustic[["var_interval"]].astype(float)
-#simple_acoustic[["mean_interval"]] = simple_acoustic[["mean_interval"]].astype(float)
-simple_acoustic['condition'] = simple_acoustic['mean_interval'].astype(str) + '/' + simple_acoustic['var_interval'].astype(str)
 durations = simple_acoustic.groupby(['mouse','mean_interval','var_interval'])['duration'].mean().unstack('mouse')
 clean_durations=durations.dropna()
 # data = {
